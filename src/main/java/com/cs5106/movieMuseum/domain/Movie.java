@@ -1,9 +1,9 @@
 package com.cs5106.movieMuseum.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Movie {
@@ -17,6 +17,25 @@ public class Movie {
     private int releaseYear;
     private double imdbRating;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "movie_genre", // movie_genre is the name of the table that will be created
+        joinColumns = @JoinColumn(name = "movie_id"),  // movie_id is the column name in the movie_genre table
+        inverseJoinColumns = @JoinColumn(name = "genre_id")) // genre_id is the column name in the movie_genre table
+
+    private Set<Genre> genres = new HashSet<>(); // genres is the name of the column in the movie table
+
+    public void addGenre(Genre genre) {
+        this.genres.add(genre);
+        genre.getMovies().add(this);
+    }
+
+    public void removeGenre(Genre genre) {
+        this.genres.remove(genre);
+        genre.getMovies().remove(this);
+    }
+
+
     public Movie() {
         super();
     }
@@ -27,6 +46,10 @@ public class Movie {
         this.director = director;
         this.releaseYear = releaseYear;
         this.imdbRating = imdbRating;
+    }
+
+    public Set<Genre> getGenres() {
+        return genres;
     }
 
     public String getTitle() {
