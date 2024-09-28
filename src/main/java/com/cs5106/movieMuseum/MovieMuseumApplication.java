@@ -1,6 +1,8 @@
 package com.cs5106.movieMuseum;
 
+import com.cs5106.movieMuseum.domain.Genre;
 import com.cs5106.movieMuseum.domain.Movie;
+import com.cs5106.movieMuseum.domain.GenreRepository;
 import com.cs5106.movieMuseum.domain.MovieRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,10 +13,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class MovieMuseumApplication implements CommandLineRunner {
 	private final MovieRepository movieRepository;
+	private final GenreRepository genreRepository;
 	private static final Logger logger = LoggerFactory.getLogger(MovieMuseumApplication.class);
 
-    public MovieMuseumApplication(MovieRepository movieRepository) {
+    public MovieMuseumApplication(MovieRepository movieRepository, GenreRepository genreRepository) {
         this.movieRepository = movieRepository;
+		this.genreRepository = genreRepository;
     }
 
     public static void main(String[] args) {
@@ -24,13 +28,42 @@ public class MovieMuseumApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		movieRepository.save(new Movie("The Shawshank Redemption", "Frank Darabont", 1994, 9.3));
-		movieRepository.save(new Movie("The Godfather", "Francis Ford Coppola", 1972, 9.2));
-		movieRepository.save(new Movie("The Dark Knight", "Christopher Nolan", 2008, 9.0));
-		logger.info("Movies saved to database.");
+		// Create and save movies
+		Movie shawshank = new Movie("The Shawshank Redemption", "Frank Darabont", 1994, 9.3);
+		Movie godfather = new Movie("The Godfather", "Francis Ford Coppola", 1972, 9.2);
+		Movie darkKnight = new Movie("The Dark Knight", "Christopher Nolan", 2008, 9.0);
+
+		movieRepository.save(shawshank);
+		movieRepository.save(godfather);
+		movieRepository.save(darkKnight);
+
+		// Create genres
+		Genre drama = new Genre("Drama", "Dramatic movies");
+		Genre crime = new Genre("Crime", "Crime movies");
+		Genre action = new Genre("Action", "Action movies");
+
+		// Add genres to movies
+		shawshank.addGenre(drama);
+		godfather.addGenre(drama);
+		godfather.addGenre(crime);
+		darkKnight.addGenre(action);
+		darkKnight.addGenre(crime);
+
+		// Save genres
+		genreRepository.save(drama);
+		genreRepository.save(crime);
+		genreRepository.save(action);
+
+		// Save movies again to update the relationships
+		movieRepository.save(shawshank);
+		movieRepository.save(godfather);
+		movieRepository.save(darkKnight);
+
+		logger.info("Movies and genres saved to database.");
 
 		for (Movie movie : movieRepository.findAll()) {
-			logger.info("Title: {}, Director: {}, Release Year: {}, IMDB Rating: {}", movie.getTitle(), movie.getDirector(), movie.getReleaseYear(), movie.getImdbRating());
+			logger.info("Title: {}, Director: {}, Release Year: {}, IMDB Rating: {}",
+					movie.getTitle(), movie.getDirector(), movie.getReleaseYear(), movie.getImdbRating());
 		}
 	}
 }
