@@ -1,9 +1,6 @@
 package com.cs5106.movieMuseum;
 
-import com.cs5106.movieMuseum.domain.Genre;
-import com.cs5106.movieMuseum.domain.Movie;
-import com.cs5106.movieMuseum.domain.GenreRepository;
-import com.cs5106.movieMuseum.domain.MovieRepository;
+import com.cs5106.movieMuseum.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -14,11 +11,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MovieMuseumApplication implements CommandLineRunner {
 	private final MovieRepository movieRepository;
 	private final GenreRepository genreRepository;
+	private final ActorRepository actorRepository;
+	private final DirectorRepository directorRepository;
 	private static final Logger logger = LoggerFactory.getLogger(MovieMuseumApplication.class);
 
-    public MovieMuseumApplication(MovieRepository movieRepository, GenreRepository genreRepository) {
+    public MovieMuseumApplication(MovieRepository movieRepository, GenreRepository genreRepository, ActorRepository actorRepository, DirectorRepository directorRepository) {
         this.movieRepository = movieRepository;
 		this.genreRepository = genreRepository;
+		this.actorRepository = actorRepository;
+		this.directorRepository = directorRepository;
     }
 
     public static void main(String[] args) {
@@ -28,6 +29,7 @@ public class MovieMuseumApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+		// Joey & Alex
 		// Create and save movies
 		Movie shawshank = new Movie("The Shawshank Redemption", "Frank Darabont", 1994, 9.3);
 		Movie godfather = new Movie("The Godfather", "Francis Ford Coppola", 1972, 9.2);
@@ -65,5 +67,7 @@ public class MovieMuseumApplication implements CommandLineRunner {
 			logger.info("Title: {}, Director: {}, Release Year: {}, IMDB Rating: {}",
 					movie.getTitle(), movie.getDirector(), movie.getReleaseYear(), movie.getImdbRating());
 		}
+
+
 	}
 }
