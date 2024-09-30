@@ -17,5 +17,5 @@ Lorem Ipsum
      ```
 2. **Use JDK 17**
 9. **Install MariaDB** from the [MariaDB Website](https://mariadb.com/downloads/community/)
-3. **Download a Database Manager**. The team is using HeidSql (comes with MariaDB on Windows) and [DBeaver](https://dbeaver.io/download/). Create a database 'moviemusuem' inside of localhost 3306.
+3. **Download a Database Manager**. The team is using HeidSql (comes with MariaDB on Windows) or alternatively [DBeaver](https://dbeaver.io/download/). Create a database 'moviemusuem' inside of localhost 3306.
 4. **Run** it throught the `MovieMusuemApplication` in an IDE of your choice (The team uses [Intellij](https://www.jetbrains.com/idea/download/?section=linux) primarily).
