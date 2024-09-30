@@ -1,10 +1,7 @@
 package com.cs5106.movieMuseum.domain.entity;
-
-
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-import com.cs5106.movieMuseum.domain.entity.Movie;
 
 @Entity
 public class Genre {
