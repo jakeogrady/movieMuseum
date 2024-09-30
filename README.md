@@ -1,4 +1,4 @@
-### MovieMusuem
+# MovieMusuem
 
 ## Members of the Team
 1. [Vlad](https://github.com/vdflorea)
