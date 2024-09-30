@@ -61,4 +61,10 @@ public class Director {
     public Set<Movie> getMovies() {
         return movies;
     }
+
+    @Override
+    public String toString() {
+        return firstName + " " + lastName;
+    }
+
 }

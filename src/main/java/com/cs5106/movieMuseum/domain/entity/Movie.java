@@ -13,10 +13,10 @@ public class Movie {
     private Long id;
 
     private String title;
-    private String director;
     private int releaseYear;
     private double imdbRating;
 
+    //confirmed working
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "movie_genre", // movie_genre is the name of the table that will be created
@@ -35,15 +35,26 @@ public class Movie {
         genre.getMovies().remove(this);
     }
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "director_id")
+    private Director director;
+
+    public Director getDirector() {
+        return director;
+    }
+
+    public void setDirector(Director director) {
+        this.director = director;
+    }
+
 
     public Movie() {
         super();
     }
 
-    public Movie(String title, String director, int releaseYear, double imdbRating) {
+    public Movie(String title, int releaseYear, double imdbRating) {
         super();
         this.title = title;
-        this.director = director;
         this.releaseYear = releaseYear;
         this.imdbRating = imdbRating;
     }
@@ -58,14 +69,6 @@ public class Movie {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getDirector() {
-        return director;
-    }
-
-    public void setDirector(String director) {
-        this.director = director;
     }
 
     public int getReleaseYear() {
@@ -87,4 +90,10 @@ public class Movie {
     public Long getId() {
         return id;
     }
+
+    public void addActor(Actor actor) {
+        //this.actors.add(actor);
+        //actor.getMovies().add(this);
+    }
+
 }

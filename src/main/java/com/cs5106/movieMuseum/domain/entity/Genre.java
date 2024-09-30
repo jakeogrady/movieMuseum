@@ -1,10 +1,7 @@
 package com.cs5106.movieMuseum.domain.entity;
-
-
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-import com.cs5106.movieMuseum.domain.entity.Movie;
 
 @Entity
 public class Genre {
@@ -22,20 +19,19 @@ public class Genre {
         super();
     }
 
-    public Genre(String genreName, String genreDescription) {
+    public Genre(String genreName) {
         super();
         this.genreName = genreName;
-        this.genreDescription = genreDescription;
     }
 
     public void addMovie(Movie movie) {
         this.movies.add(movie);
-        movie.getGenres().add(this);
+        //movie.getGenres().add(this);
     }
 
     public void removeMovie(Movie movie) {
         this.movies.remove(movie);
-        movie.getGenres().remove(this);
+        //movie.getGenres().remove(this);
     }
 
     public Set<Movie> getMovies() {
@@ -52,13 +48,5 @@ public class Genre {
 
     public void setGenreName(String genreName) {
         this.genreName = genreName;
-    }
-
-    public String getGenreDescription() {
-        return genreDescription;
-    }
-
-    public void setGenreDescription(String genreDescription) {
-        this.genreDescription = genreDescription;
     }
 }
