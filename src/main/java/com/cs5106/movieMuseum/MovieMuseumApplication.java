@@ -77,6 +77,11 @@ public class MovieMuseumApplication implements CommandLineRunner {
 		godfather.setDirector(francisFordCoppola);
 		darkKnight.setDirector(christopherNolan);
 
+		// Add actors to movies
+		shawshank.addActor(mattDamon);
+		godfather.addActor(bradPitt);
+		darkKnight.addActor(emmaStone);
+
 		// Save genres
 		genreRepository.save(drama);
 		genreRepository.save(crime);

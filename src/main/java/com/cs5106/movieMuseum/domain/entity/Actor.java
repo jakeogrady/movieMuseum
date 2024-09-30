@@ -10,12 +10,7 @@ public class Actor {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "movie_actor",
-            joinColumns = @JoinColumn(name = "movie_id"),
-            inverseJoinColumns = @JoinColumn(name = "actor_id")
-    )
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "actors")
     private Set<Movie> movies = new HashSet<>();
 
     private String firstName;
