@@ -17,11 +17,13 @@ public class Movie {
     private int releaseYear;
     private double imdbRating;
 
+    //confirmed working
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "movie_genre", // movie_genre is the name of the table that will be created
         joinColumns = @JoinColumn(name = "movie_id"),  // movie_id is the column name in the movie_genre table
         inverseJoinColumns = @JoinColumn(name = "genre_id")) // genre_id is the column name in the movie_genre table
+
 
     private Set<Genre> genres = new HashSet<>(); // genres is the name of the column in the movie table
 
