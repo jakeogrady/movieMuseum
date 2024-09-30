@@ -1,6 +1,7 @@
-package com.cs5106.movieMuseum.domain;
+package com.cs5106.movieMuseum.domain.repository;
 
 import org.springframework.data.repository.CrudRepository;
+import com.cs5106.movieMuseum.domain.entity.Movie;
 
 import java.util.List;
 

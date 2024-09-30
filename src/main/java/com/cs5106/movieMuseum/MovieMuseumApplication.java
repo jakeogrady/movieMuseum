@@ -1,6 +1,12 @@
 package com.cs5106.movieMuseum;
 
-import com.cs5106.movieMuseum.domain.*;
+import com.cs5106.movieMuseum.domain.entity.Genre;
+import com.cs5106.movieMuseum.domain.entity.Movie;
+import com.cs5106.movieMuseum.domain.repository.ActorRepository;
+import com.cs5106.movieMuseum.domain.repository.DirectorRepository;
+import com.cs5106.movieMuseum.domain.repository.GenreRepository;
+import com.cs5106.movieMuseum.domain.repository.MovieRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
