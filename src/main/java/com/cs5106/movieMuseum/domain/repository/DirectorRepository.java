@@ -1,5 +1,7 @@
-package com.cs5106.movieMuseum.domain;
+package com.cs5106.movieMuseum.domain.repository;
 
+import com.cs5106.movieMuseum.domain.Actor;
+import com.cs5106.movieMuseum.domain.Director;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
