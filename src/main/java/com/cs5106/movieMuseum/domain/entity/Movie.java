@@ -35,6 +35,14 @@ public class Movie {
         genre.getMovies().remove(this);
     }
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "movie_actor",
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "actor_id")
+    )
+    private Set<Actor> actors = new HashSet<>();
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "director_id")
     private Director director;
@@ -92,8 +100,8 @@ public class Movie {
     }
 
     public void addActor(Actor actor) {
-        //this.actors.add(actor);
-        //actor.getMovies().add(this);
+        this.actors.add(actor);
+        actor.getMovies().add(this);
     }
 
 }
