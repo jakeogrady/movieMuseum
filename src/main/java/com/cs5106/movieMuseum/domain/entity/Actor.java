@@ -21,6 +21,15 @@ public class Actor {
     private String firstName;
     private String lastName;
 
+    public Actor() {
+        super();
+    }
+
+    public Actor(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public Long getId() {
         return id;
     }

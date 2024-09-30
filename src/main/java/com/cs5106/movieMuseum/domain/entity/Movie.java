@@ -23,18 +23,7 @@ public class Movie {
         joinColumns = @JoinColumn(name = "movie_id"),  // movie_id is the column name in the movie_genre table
         inverseJoinColumns = @JoinColumn(name = "genre_id")) // genre_id is the column name in the movie_genre table
 
-    private Set<Genre> genres = new HashSet<>(); // genres is the name of the column in the movie table
-
-    public void addGenre(Genre genre) {
-        this.genres.add(genre);
-        genre.getMovies().add(this);
-    }
-
-    public void removeGenre(Genre genre) {
-        this.genres.remove(genre);
-        genre.getMovies().remove(this);
-    }
-
+    private Set<Genre> genres = new HashSet<>();
 
     public Movie() {
         super();
@@ -87,4 +76,20 @@ public class Movie {
     public Long getId() {
         return id;
     }
+
+    public void addGenre(Genre genre) {
+        this.genres.add(genre);
+        genre.getMovies().add(this);
+    }
+
+    public void removeGenre(Genre genre) {
+        this.genres.remove(genre);
+        genre.getMovies().remove(this);
+    }
+
+    public void addActor(Actor actor) {
+        //this.actors.add(actor);
+        //actor.getMovies().add(this);
+    }
+
 }
