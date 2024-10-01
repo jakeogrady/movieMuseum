@@ -1,11 +1,13 @@
 package com.cs5106.movieMuseum.domain.controller;
 
 import com.cs5106.movieMuseum.domain.entity.Actor;
+import com.cs5106.movieMuseum.domain.entity.Movie;
 import com.cs5106.movieMuseum.domain.repository.ActorRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 public class ActorController {
@@ -77,6 +79,18 @@ public class ActorController {
     @GetMapping("/actors/firstName/{firstName}/lastName/{lastName}")
     public Iterable<Actor> getActorsByFirstNameAndLastName(@PathVariable String firstName, @PathVariable String lastName) {
         return actorRepository.findByFirstNameAndLastName(firstName, lastName);
+    }
+
+    @GetMapping("/actors/{id}/movies")
+    public ResponseEntity<Set<Movie>> getMoviesByActor(@PathVariable Long id) {
+        Optional<Actor> optionalActor = actorRepository.findById(id);
+        if (optionalActor.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Actor actor = optionalActor.get();
+        Set<Movie> movies = actor.getMovies();
+        return ResponseEntity.ok(movies);
     }
 
 }

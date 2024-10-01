@@ -42,10 +42,12 @@ public class MovieMuseumApplication implements CommandLineRunner {
 		Movie shawshank = new Movie("The Shawshank Redemption", 1994, 9.3);
 		Movie godfather = new Movie("The Godfather", 1972, 9.2);
 		Movie darkKnight = new Movie("The Dark Knight", 2008, 9.0);
+		Movie secondMovieTest = new Movie("Second Movie Test", 2021, 8.0);
 
 		movieRepository.save(shawshank);
 		movieRepository.save(godfather);
 		movieRepository.save(darkKnight);
+		movieRepository.save(secondMovieTest);
 
 		// Create genres
 		Genre drama = new Genre("Drama");
@@ -73,17 +75,22 @@ public class MovieMuseumApplication implements CommandLineRunner {
 		godfather.addGenre(crime);
 		darkKnight.addGenre(action);
 		darkKnight.addGenre(crime);
+		secondMovieTest.addGenre(action);
+		secondMovieTest.addGenre(drama);
 
 		// Add director to movies
 		shawshank.setDirector(frankDarabont);
 		godfather.setDirector(francisFordCoppola);
 		darkKnight.setDirector(christopherNolan);
+		secondMovieTest.setDirector(christopherNolan);
 
 		// Add actors to movies
 		shawshank.addActor(mattDamon);
 		godfather.addActor(bradPitt);
 		darkKnight.addActor(emmaStone);
 		darkKnight.addActor(emmaTest);
+		secondMovieTest.addActor(emmaTest);
+		secondMovieTest.addActor(emmaStone);
 
 		// Save genres
 		genreRepository.save(drama);
@@ -99,6 +106,7 @@ public class MovieMuseumApplication implements CommandLineRunner {
 		movieRepository.save(shawshank);
 		movieRepository.save(godfather);
 		movieRepository.save(darkKnight);
+		movieRepository.save(secondMovieTest);
 
 		logger.info("Movies and genres saved to database.");
 		logger.info("MovieRepository {}", movieRepository.findAll());
