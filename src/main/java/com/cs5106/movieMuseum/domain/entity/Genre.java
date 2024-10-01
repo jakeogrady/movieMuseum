@@ -1,4 +1,6 @@
 package com.cs5106.movieMuseum.domain.entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,6 +15,7 @@ public class Genre {
     private String genreDescription;
 
     @ManyToMany(mappedBy = "genres", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Set<Movie> movies = new HashSet<>();
 
     public Genre() {
