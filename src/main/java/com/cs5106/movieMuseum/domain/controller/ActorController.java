@@ -64,4 +64,19 @@ public class ActorController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/actors/firstName/{firstName}")
+    public Iterable<Actor> getActorsByFirstName(@PathVariable String firstName) {
+        return actorRepository.findByFirstName(firstName);
+    }
+
+    @GetMapping("/actors/firstName/{lastName}")
+    public Iterable<Actor> getActorsByLastName(@PathVariable String lastName) {
+        return actorRepository.findByLastName(lastName);
+    }
+
+    @GetMapping("/actors/firstName/{firstName}/lastName/{lastName}")
+    public Iterable<Actor> getActorsByFirstNameAndLastName(@PathVariable String firstName, @PathVariable String lastName) {
+        return actorRepository.findByFirstNameAndLastName(firstName, lastName);
+    }
+
 }

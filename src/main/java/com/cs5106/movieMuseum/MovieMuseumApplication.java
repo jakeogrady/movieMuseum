@@ -56,10 +56,12 @@ public class MovieMuseumApplication implements CommandLineRunner {
 		Actor mattDamon = new Actor("Matt","Damon");
 		Actor bradPitt = new Actor("Brad","Pitt");
 		Actor emmaStone = new Actor("Emma","Stone");
+		Actor emmaTest = new Actor("Emma", "Test");
 
 		actorRepository.save(mattDamon);
 		actorRepository.save(bradPitt);
 		actorRepository.save(emmaStone);
+		actorRepository.save(emmaTest);
 
 		Director frankDarabont = new Director("Frank", "Darabont");
 		Director francisFordCoppola = new Director("Francis Ford", "Coppola");
@@ -81,6 +83,7 @@ public class MovieMuseumApplication implements CommandLineRunner {
 		shawshank.addActor(mattDamon);
 		godfather.addActor(bradPitt);
 		darkKnight.addActor(emmaStone);
+		darkKnight.addActor(emmaTest);
 
 		// Save genres
 		genreRepository.save(drama);
