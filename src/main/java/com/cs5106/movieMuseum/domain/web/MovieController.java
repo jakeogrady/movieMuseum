@@ -1,6 +1,6 @@
 package com.cs5106.movieMuseum.domain.web;
 
-import com.cs5106.movieMuseum.domain.Movie;
+import com.cs5106.movieMuseum.domain.entity.Movie;
 import com.cs5106.movieMuseum.domain.repository.MovieRepository;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,11 +31,6 @@ public class MovieController {
     }
 
     @GetMapping(value = "/movies")
-    public Iterable<Movie> getMovieByDirector(@RequestParam("director") String director) {
-        return movieRepository.findByDirector(director);
-    }
-
-    @GetMapping(value = "/movies")
     public Iterable<Movie> getMovieByReleaseYear(@RequestParam("releaseYear") int releaseYear) {
         return movieRepository.findByReleaseYear(releaseYear);
     }
@@ -43,11 +38,6 @@ public class MovieController {
     @GetMapping(value = "/movies")
     public Iterable<Movie> getMovieByImdbRating(@RequestParam("imdbRating") int imdbRating) {
         return movieRepository.findByImdbRating(imdbRating);
-    }
-
-    @GetMapping(value = "/movies")
-    public Iterable<Movie> getMovieByTitleAndDirector(@RequestParam("title") String title, @RequestParam("director") String director) {
-        return movieRepository.findByTitleAndDirector(title, director);
     }
 
     @GetMapping(value = "/movies")
