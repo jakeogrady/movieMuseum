@@ -1,4 +1,5 @@
 package com.cs5106.movieMuseum.domain.entity;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -11,6 +12,7 @@ public class Director {
     private Long id;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "director", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Set<Movie> movies = new HashSet<>();
 
     private String firstName;

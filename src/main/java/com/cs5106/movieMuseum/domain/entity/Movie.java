@@ -1,5 +1,7 @@
 package com.cs5106.movieMuseum.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -22,7 +24,7 @@ public class Movie {
         name = "movie_genre", // movie_genre is the name of the table that will be created
         joinColumns = @JoinColumn(name = "movie_id"),  // movie_id is the column name in the movie_genre table
         inverseJoinColumns = @JoinColumn(name = "genre_id")) // genre_id is the column name in the movie_genre table
-
+    @JsonIgnore
     private Set<Genre> genres = new HashSet<>(); // genres is the name of the column in the movie table
 
     public void addGenre(Genre genre) {
@@ -41,10 +43,12 @@ public class Movie {
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "actor_id")
     )
+    @JsonManagedReference
     private Set<Actor> actors = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "director_id")
+    @JsonIgnore
     private Director director;
 
     public Director getDirector() {

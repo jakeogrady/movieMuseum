@@ -1,4 +1,5 @@
 package com.cs5106.movieMuseum.domain.entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -11,6 +12,7 @@ public class Actor {
     private Long id;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "actors")
+    @JsonIgnore
     private Set<Movie> movies = new HashSet<>();
 
     private String firstName;
