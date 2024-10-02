@@ -81,6 +81,16 @@ public class ActorController {
         return actorRepository.findByFirstNameAndLastName(firstName, lastName);
     }
 
+    @GetMapping("/actors/firstName/substring/{firstName}")
+    public Iterable<Actor> getActorsByFirstNameSubstring(@PathVariable String firstName) {
+        return actorRepository.findByFirstNameSubstring(firstName);
+    }
+
+    @GetMapping("/actors/lastName/substring/{lastName}")
+    public Iterable<Actor> getActorsByLastNameSubstring(@PathVariable String lastName) {
+        return actorRepository.findByLastNameSubstring(lastName);
+    }
+
     @GetMapping("/actors/{id}/movies")
     public ResponseEntity<Set<Movie>> getMoviesByActor(@PathVariable Long id) {
         Optional<Actor> optionalActor = actorRepository.findById(id);
