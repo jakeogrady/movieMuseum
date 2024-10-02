@@ -53,9 +53,4 @@ public class GenreController {
         genreRepository.delete(genre);
         return ResponseEntity.ok(genre);
     }
-
-//    @GetMapping("/genres")
-//    public Iterable<Genre> getGenresByName(@RequestParam("genreName") String genreName) {
-//        return genreRepository.findAllByGenreName(genreName);
-//    }
 }

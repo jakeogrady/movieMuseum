@@ -74,7 +74,6 @@ public class MovieController {
 //        return movieRepository.findByTitleAndImdbRatingOrderByImdbRatingDesc(title, imdbRating);
 //    }
 
-    // Same issue as PUT
     @PostMapping("/movies")
     public Movie addMovie(@RequestBody Movie movie) {
         return movieRepository.save(movie);
