@@ -1,13 +1,13 @@
 package com.cs5106.movieMuseum.domain.controller;
 
 import com.cs5106.movieMuseum.domain.entity.Actor;
+import com.cs5106.movieMuseum.domain.entity.Movie;
 import com.cs5106.movieMuseum.domain.repository.ActorRepository;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 public class ActorController {
@@ -33,4 +33,64 @@ public class ActorController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PostMapping("/actors")
+    public Actor createActor(@RequestBody Actor actor) {
+        return actorRepository.save(actor);
+    }
+
+    @PutMapping("/actors/{id}")
+    public ResponseEntity<Actor> updateActor(@PathVariable Long id, @RequestBody Actor actorDetails) {
+        Optional<Actor> optionalActor = actorRepository.findById(id);
+
+        if (optionalActor.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Actor actor = optionalActor.get();
+        actor.setFirstName(actorDetails.getFirstName());
+        actor.setLastName(actorDetails.getLastName());
+        Actor updatedActor = actorRepository.save(actor);
+        return ResponseEntity.ok(updatedActor);
+    }
+
+    @DeleteMapping("/actors/{id}")
+    public ResponseEntity<Actor> deleteActor(@PathVariable Long id) {
+        Optional<Actor> optionalActor = actorRepository.findById(id);
+        if (optionalActor.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Actor actor = optionalActor.get();
+        actorRepository.delete(actor);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/actors/firstName/{firstName}")
+    public Iterable<Actor> getActorsByFirstName(@PathVariable String firstName) {
+        return actorRepository.findByFirstName(firstName);
+    }
+
+    @GetMapping("/actors/firstName/{lastName}")
+    public Iterable<Actor> getActorsByLastName(@PathVariable String lastName) {
+        return actorRepository.findByLastName(lastName);
+    }
+
+    @GetMapping("/actors/firstName/{firstName}/lastName/{lastName}")
+    public Iterable<Actor> getActorsByFirstNameAndLastName(@PathVariable String firstName, @PathVariable String lastName) {
+        return actorRepository.findByFirstNameAndLastName(firstName, lastName);
+    }
+
+    @GetMapping("/actors/{id}/movies")
+    public ResponseEntity<Set<Movie>> getMoviesByActor(@PathVariable Long id) {
+        Optional<Actor> optionalActor = actorRepository.findById(id);
+        if (optionalActor.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Actor actor = optionalActor.get();
+        Set<Movie> movies = actor.getMovies();
+        return ResponseEntity.ok(movies);
+    }
+
 }
