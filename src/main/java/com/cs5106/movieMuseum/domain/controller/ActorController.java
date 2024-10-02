@@ -71,7 +71,7 @@ public class ActorController {
         return actorRepository.findByFirstName(firstName);
     }
 
-    @GetMapping("/actors/firstName/{lastName}")
+    @GetMapping("/actors/lastName/{lastName}")
     public Iterable<Actor> getActorsByLastName(@PathVariable String lastName) {
         return actorRepository.findByLastName(lastName);
     }
