@@ -1,5 +1,6 @@
 package com.cs5106.movieMuseum.domain.controller;
 
+import com.cs5106.movieMuseum.domain.entity.Actor;
 import com.cs5106.movieMuseum.domain.entity.Director;
 import com.cs5106.movieMuseum.domain.entity.Movie;
 import com.cs5106.movieMuseum.domain.repository.DirectorRepository;
@@ -79,6 +80,16 @@ public class DirectorController {
     @GetMapping("/directors/firstName/{firstName}/lastName/{lastName}")
     public Iterable<Director> getDirectorsByFirstNameAndLastName(@PathVariable String firstName, @PathVariable String lastName) {
         return directorRepository.findByFirstNameAndLastName(firstName, lastName);
+    }
+
+    @GetMapping("/directors/firstName/substring/{firstName}")
+    public Iterable<Director> getDirectorsByFirstNameSubstring(@PathVariable String firstName) {
+        return directorRepository.findByFirstNameSubstring(firstName);
+    }
+
+    @GetMapping("/directors/lastName/substring/{lastName}")
+    public Iterable<Director> getDirectorsByLastNameSubstring(@PathVariable String lastName) {
+        return directorRepository.findByLastNameSubstring(lastName);
     }
 
     @GetMapping("/directors/{id}/movies")
