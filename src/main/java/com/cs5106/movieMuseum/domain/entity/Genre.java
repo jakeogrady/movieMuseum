@@ -15,7 +15,7 @@ public class Genre {
     private String genreDescription;
 
     @ManyToMany(mappedBy = "genres", fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonIgnore
     private Set<Movie> movies = new HashSet<>();
 
     public Genre() {
