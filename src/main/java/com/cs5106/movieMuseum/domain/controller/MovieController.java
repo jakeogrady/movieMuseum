@@ -91,4 +91,19 @@ public class MovieController {
         movieRepository.delete(movie);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/movies/title/{title}/releaseYear/{year}")
+    public Iterable<Movie> getMovieByTitleAndReleaseYear(@PathVariable String title, @PathVariable int year) {
+        return movieRepository.findByTitleAndReleaseYear(title, year);
+    }
+
+    @GetMapping("/movies/title/substring/{title}")
+    public Iterable<Movie> getMovieByTitleSubstring(@PathVariable String title) {
+        return movieRepository.findByTitleSubstring(title);
+    }
+
+    @GetMapping("/movies/imdb/between/{lower}/{upper}")
+    public Iterable<Movie> getMovieByImdbRatingBetween(@PathVariable double lower, @PathVariable double upper) {
+        return movieRepository.findByImdbRatingBetween(lower, upper);
+    }
 }
