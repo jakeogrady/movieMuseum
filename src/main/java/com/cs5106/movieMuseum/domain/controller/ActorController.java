@@ -4,9 +4,7 @@ import com.cs5106.movieMuseum.domain.entity.Actor;
 import com.cs5106.movieMuseum.domain.entity.Movie;
 import com.cs5106.movieMuseum.domain.repository.ActorRepository;
 import com.cs5106.movieMuseum.domain.repository.MovieRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -102,6 +100,7 @@ public class ActorController {
         }
 
         if (actor.getFirstName().equals(firstName) && actor.getLastName().equals(lastName)) {
+            actor.setId(actorOpt.get().getId());
             actorRepository.save(actor);
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, format("Actor %s %s does not match the path", firstName, lastName));

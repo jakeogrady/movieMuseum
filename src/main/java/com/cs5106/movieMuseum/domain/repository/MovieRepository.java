@@ -10,14 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MovieRepository extends CrudRepository<Movie, Long> {
-    List<Movie> findById(int id);
-    List<Movie> findByTitle(String title);
     List<Movie> findByReleaseYear(int releaseYear);
     List<Movie> findByImdbRating(double imdbRating);
     Optional<Movie> findDistinctByTitle(String title);
-
-    List<Movie> findByTitleAndImdbRatingOrderByImdbRatingDesc(String title, double imdbRating);
-    List<Movie> findByTitleAndReleaseYear(String title, int releaseYear);
 
     @Query("SELECT m FROM Movie m WHERE m.title LIKE %:titleSubstring%")
     List<Movie> findByTitleSubstring(String titleSubstring);
