@@ -62,9 +62,9 @@ public class MovieMuseumApplication implements CommandLineRunner {
 		actorRepository.save(emmaStone);
 		actorRepository.save(emmaTest);
 
-		Director frankDarabont = new Director("Frank", "Darabont");
-		Director francisFordCoppola = new Director("Francis Ford", "Coppola");
-		Director christopherNolan = new Director("Christopher", "Nolan");
+		Director frankDarabont = new Director("Frank", "Darabont", 64);
+		Director francisFordCoppola = new Director("Francis Ford", "Coppola", 85);
+		Director christopherNolan = new Director("Christopher", "Nolan", 54);
 
 		shawshank.addGenre(drama);
 		godfather.addGenre(drama);

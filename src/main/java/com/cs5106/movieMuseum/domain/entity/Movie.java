@@ -72,6 +72,4 @@ public class Movie {
         this.releaseYear = releaseYear;
         this.imdbRating = imdbRating;
     }
-
-
 }
