@@ -52,10 +52,10 @@ public class MovieMuseumApplication implements CommandLineRunner {
 		Genre crime = new Genre("Crime");
 		Genre action = new Genre("Action");
 
-		Actor mattDamon = new Actor("Matt","Damon");
-		Actor bradPitt = new Actor("Brad","Pitt");
-		Actor emmaStone = new Actor("Emma","Stone");
-		Actor emmaTest = new Actor("Emma", "Test");
+		Actor mattDamon = new Actor("Matt","Damon", 50);
+		Actor bradPitt = new Actor("Brad","Pitt", 57);
+		Actor emmaStone = new Actor("Emma","Stone", 32);
+		Actor emmaTest = new Actor("Emma", "Test", 69);
 
 		actorRepository.save(mattDamon);
 		actorRepository.save(bradPitt);

@@ -3,18 +3,27 @@ package com.cs5106.movieMuseum.domain.controller;
 import com.cs5106.movieMuseum.domain.entity.Actor;
 import com.cs5106.movieMuseum.domain.entity.Movie;
 import com.cs5106.movieMuseum.domain.repository.ActorRepository;
+import com.cs5106.movieMuseum.domain.repository.MovieRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import static java.lang.String.format;
 
 @RestController
 public class ActorController {
     private final ActorRepository actorRepository;
+    private final MovieRepository movieRepository;
 
-    public ActorController(ActorRepository actorRepository) {
+    public ActorController(ActorRepository actorRepository, MovieRepository movieRepository) {
         this.actorRepository = actorRepository;
+        this.movieRepository = movieRepository;
     }
 
     @GetMapping("/actors")
@@ -22,85 +31,125 @@ public class ActorController {
         return actorRepository.findAll();
     }
 
-    @GetMapping("/actors/{id}")
-    public ResponseEntity<Actor> getActor(@PathVariable Long id) {
-        Optional<Actor> optionalActor = actorRepository.findById(id);
-
-        if (optionalActor.isPresent()) {
-            Actor actor = optionalActor.get();
-            return ResponseEntity.ok(actor);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PostMapping("/actors")
-    public Actor createActor(@RequestBody Actor actor) {
-        return actorRepository.save(actor);
-    }
-
-    @PutMapping("/actors/{id}")
-    public ResponseEntity<Actor> updateActor(@PathVariable Long id, @RequestBody Actor actorDetails) {
-        Optional<Actor> optionalActor = actorRepository.findById(id);
-
-        if (optionalActor.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Actor actor = optionalActor.get();
-        actor.setFirstName(actorDetails.getFirstName());
-        actor.setLastName(actorDetails.getLastName());
-        Actor updatedActor = actorRepository.save(actor);
-        return ResponseEntity.ok(updatedActor);
-    }
-
-    @DeleteMapping("/actors/{id}")
-    public ResponseEntity<Actor> deleteActor(@PathVariable Long id) {
-        Optional<Actor> optionalActor = actorRepository.findById(id);
-        if (optionalActor.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Actor actor = optionalActor.get();
-        actorRepository.delete(actor);
-        return ResponseEntity.noContent().build();
-    }
-
     @GetMapping("/actors/firstName/{firstName}")
-    public Iterable<Actor> getActorsByFirstName(@PathVariable String firstName) {
-        return actorRepository.findByFirstName(firstName);
+    public List<Actor> getActorsByFirstName(@PathVariable String firstName) {
+        List<Actor> actors = actorRepository.findByFirstName(firstName);
+        if (actors.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Actor %s not found", firstName));
+        }
+        return actors;
+
     }
 
     @GetMapping("/actors/lastName/{lastName}")
-    public Iterable<Actor> getActorsByLastName(@PathVariable String lastName) {
-        return actorRepository.findByLastName(lastName);
+    public List<Actor> getActorsByLastName(@PathVariable String lastName) {
+        List<Actor> actors = actorRepository.findByLastName(lastName);
+        if (actors.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Actor %s not found", lastName));
+        }
+        return actors;
     }
 
-    @GetMapping("/actors/firstName/{firstName}/lastName/{lastName}")
-    public Iterable<Actor> getActorsByFirstNameAndLastName(@PathVariable String firstName, @PathVariable String lastName) {
-        return actorRepository.findByFirstNameAndLastName(firstName, lastName);
+    @GetMapping("/actor/{firstName}/{lastName}")
+    public Actor getActorByFirstNameAndLastName(@PathVariable String firstName, @PathVariable String lastName) {
+        Optional<Actor> actorOpt = actorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
+        if (actorOpt.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Actor %s %s not found", firstName, lastName));
+        }
+        return actorOpt.get();
     }
 
     @GetMapping("/actors/firstName/substring/{firstName}")
-    public Iterable<Actor> getActorsByFirstNameSubstring(@PathVariable String firstName) {
-        return actorRepository.findByFirstNameSubstring(firstName);
+    public List<Actor> getActorsByFirstNameSubstring(@PathVariable String firstName) {
+        List<Actor> actors = actorRepository.findByFirstNameSubstring(firstName);
+        if (actors.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Actor with first name containing %s not found", firstName));
+        }
+        return actors;
     }
 
     @GetMapping("/actors/lastName/substring/{lastName}")
-    public Iterable<Actor> getActorsByLastNameSubstring(@PathVariable String lastName) {
-        return actorRepository.findByLastNameSubstring(lastName);
+    public List<Actor> getActorsByLastNameSubstring(@PathVariable String lastName) {
+        List<Actor> actors = actorRepository.findByLastNameSubstring(lastName);
+        if (actors.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Actor with last name containing %s not found", lastName));
+        }
+        return actors;
     }
 
-    @GetMapping("/actors/{id}/movies")
-    public ResponseEntity<Set<Movie>> getMoviesByActor(@PathVariable Long id) {
-        Optional<Actor> optionalActor = actorRepository.findById(id);
-        if (optionalActor.isEmpty()) {
-            return ResponseEntity.notFound().build();
+    @GetMapping("/actor/{firstName}/{lastName}/movies")
+    public Set<Movie> getMoviesByActor(@PathVariable String firstName, @PathVariable String lastName) {
+        Optional<Actor> actorOpt = actorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
+        if (actorOpt.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Actor %s %s not found", firstName, lastName));
+        }
+        return actorOpt.get().getMovies();
+    }
+
+    @PostMapping("/actors")
+    public Actor addActor(@RequestBody Actor actor) {
+        if (actorRepository.findDistinctByFirstNameAndLastName(actor.getFirstName(), actor.getLastName()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, format("Actor %s %s already exists", actor.getFirstName(), actor.getLastName()));
+        }
+        return actorRepository.save(actor);
+    }
+
+    @PutMapping("/actor/{firstName}/{lastName}")
+    public void updateActor(@PathVariable String firstName, @PathVariable String lastName, @RequestBody Actor actor) {
+        Optional<Actor> actorOpt = actorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
+        if (actorOpt.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Actor %s %s not found", firstName, lastName));
         }
 
-        Actor actor = optionalActor.get();
-        Set<Movie> movies = actor.getMovies();
-        return ResponseEntity.ok(movies);
+        if (actor.getFirstName().equals(firstName) && actor.getLastName().equals(lastName)) {
+            actorRepository.save(actor);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, format("Actor %s %s does not match the path", firstName, lastName));
+        }
     }
+
+    @PutMapping("/actor/{firstName}/{lastName}/addMovie/{title}")
+    public void addMovieToActor(@PathVariable String firstName, @PathVariable String lastName, @PathVariable String title) {
+
+        Optional<Actor> actorOpt = actorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
+        if (actorOpt.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Actor %s %s not found", firstName, lastName));
+        }
+        Optional<Movie> movieOpt = movieRepository.findDistinctByTitle(title);
+        if (movieOpt.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Movie %s not found", title));
+        }
+
+        actorOpt.get().addMovie(movieOpt.get());
+        actorRepository.save(actorOpt.get());
+        movieRepository.save(movieOpt.get());
+    }
+
+    @PutMapping("/actor/{firstName}/{lastName}/removeMovie/{title}")
+    public void removeMovieFromActor(@PathVariable String firstName, @PathVariable String lastName, @PathVariable String title) {
+
+        Optional<Actor> actorOpt = actorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
+        if (actorOpt.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Actor %s %s not found", firstName, lastName));
+        }
+        Optional<Movie> movieOpt = movieRepository.findDistinctByTitle(title);
+        if (movieOpt.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Movie %s not found", title));
+        }
+
+        actorOpt.get().removeMovie(movieOpt.get());
+        actorRepository.save(actorOpt.get());
+    }
+
+    @DeleteMapping("/actor/{firstName}/{lastName}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteActor(@PathVariable String firstName, @PathVariable String lastName) {
+        Optional<Actor> actor = actorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
+        if (actor.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Actor %s %s not found", firstName, lastName));
+        }
+        actorRepository.delete(actor.get());
+    }
+
 
 }

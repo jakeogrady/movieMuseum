@@ -19,7 +19,6 @@ public class Genre {
     private Long id;
 
     private String genreName;
-    private String genreDescription;
 
     @ManyToMany(mappedBy = "genres", fetch = FetchType.LAZY)
     @JsonIgnore

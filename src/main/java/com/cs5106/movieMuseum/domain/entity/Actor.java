@@ -19,23 +19,27 @@ public class Actor {
 
     private String firstName;
     private String lastName;
+    private int age;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "actors")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "actors", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Movie> movies = new HashSet<>();
 
 
-    public Actor(String firstName, String lastName) {
+    public Actor(String firstName, String lastName, int age) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.age = age;
     }
 
     public void addMovie(Movie movie) {
         this.movies.add(movie);
+        movie.addActor(this);
     }
 
     public void removeMovie(Movie movie) {
         this.movies.remove(movie);
+        movie.removeActor(this);
     }
 
 }
