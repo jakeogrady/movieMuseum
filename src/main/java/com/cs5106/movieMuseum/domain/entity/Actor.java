@@ -1,53 +1,32 @@
 package com.cs5106.movieMuseum.domain.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@NoArgsConstructor
+@Getter
+@Setter
 public class Actor {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private String firstName;
+    private String lastName;
+
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "actors")
     @JsonIgnore
     private Set<Movie> movies = new HashSet<>();
 
-    private String firstName;
-    private String lastName;
-
-    public Actor() {
-        super();
-    }
 
     public Actor(String firstName, String lastName) {
         this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
@@ -59,7 +38,4 @@ public class Actor {
         this.movies.remove(movie);
     }
 
-    public Set<Movie> getMovies() {
-        return movies;
-    }
 }

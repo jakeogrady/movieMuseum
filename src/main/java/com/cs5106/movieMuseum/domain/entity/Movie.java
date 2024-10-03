@@ -3,11 +3,17 @@ package com.cs5106.movieMuseum.domain.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Setter
+@Getter
+@NoArgsConstructor
 public class Movie {
 
     @Id
@@ -18,14 +24,13 @@ public class Movie {
     private int releaseYear;
     private double imdbRating;
 
-    //confirmed working
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-        name = "movie_genre", // movie_genre is the name of the table that will be created
-        joinColumns = @JoinColumn(name = "movie_id"),  // movie_id is the column name in the movie_genre table
-        inverseJoinColumns = @JoinColumn(name = "genre_id")) // genre_id is the column name in the movie_genre table
+        name = "movie_genre",
+        joinColumns = @JoinColumn(name = "movie_id"),
+        inverseJoinColumns = @JoinColumn(name = "genre_id"))
     @JsonIgnore
-    private Set<Genre> genres = new HashSet<>(); // genres is the name of the column in the movie table
+    private Set<Genre> genres = new HashSet<>();
 
     public void addGenre(Genre genre) {
         this.genres.add(genre);
@@ -43,7 +48,7 @@ public class Movie {
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "actor_id")
     )
-    @JsonManagedReference
+    @JsonIgnore
     private Set<Actor> actors = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -51,56 +56,11 @@ public class Movie {
     @JsonIgnore
     private Director director;
 
-    public Director getDirector() {
-        return director;
-    }
-
-    public void setDirector(Director director) {
-        this.director = director;
-    }
-
-
-    public Movie() {
-        super();
-    }
-
     public Movie(String title, int releaseYear, double imdbRating) {
         super();
         this.title = title;
         this.releaseYear = releaseYear;
         this.imdbRating = imdbRating;
-    }
-
-    public Set<Genre> getGenres() {
-        return genres;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public int getReleaseYear() {
-        return releaseYear;
-    }
-
-    public void setReleaseYear(int year) {
-        this.releaseYear = year;
-    }
-
-    public double getImdbRating() {
-        return imdbRating;
-    }
-
-    public void setImdbRating(double imdbRating) {
-        this.imdbRating = imdbRating;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public void addActor(Actor actor) {

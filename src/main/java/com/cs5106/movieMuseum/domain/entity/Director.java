@@ -1,54 +1,32 @@
 package com.cs5106.movieMuseum.domain.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Getter
+@Setter
 @Entity
+@NoArgsConstructor
 public class Director {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private String firstName;
+    private String lastName;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "director", fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<Movie> movies = new HashSet<>();
 
-    private String firstName;
-    private String lastName;
-
-    public Director() {
-        super();
-    }
-
     public Director(String firstName, String lastName) {
         super();
         this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
@@ -58,10 +36,6 @@ public class Director {
 
     public void removeMovie(Movie movie) {
         this.movies.remove(movie);
-    }
-
-    public Set<Movie> getMovies() {
-        return movies;
     }
 
     @Override
