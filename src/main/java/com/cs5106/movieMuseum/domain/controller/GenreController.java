@@ -1,7 +1,6 @@
-package com.cs5106.movieMuseum.domain.web;
+package com.cs5106.movieMuseum.domain.controller;
 
 import com.cs5106.movieMuseum.domain.entity.Genre;
-import com.cs5106.movieMuseum.domain.entity.Movie;
 import com.cs5106.movieMuseum.domain.repository.GenreRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

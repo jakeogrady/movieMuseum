@@ -37,8 +37,7 @@ public class MovieMuseumApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		// Joey & Alex
-		// Create and save movies
+
 		Movie shawshank = new Movie("The Shawshank Redemption", 1994, 9.3);
 		Movie godfather = new Movie("The Godfather", 1972, 9.2);
 		Movie darkKnight = new Movie("The Dark Knight", 2008, 9.0);
@@ -49,12 +48,10 @@ public class MovieMuseumApplication implements CommandLineRunner {
 		movieRepository.save(darkKnight);
 		movieRepository.save(secondMovieTest);
 
-		// Create genres
 		Genre drama = new Genre("Drama");
 		Genre crime = new Genre("Crime");
 		Genre action = new Genre("Action");
 
-		// Create Actors
 		Actor mattDamon = new Actor("Matt","Damon");
 		Actor bradPitt = new Actor("Brad","Pitt");
 		Actor emmaStone = new Actor("Emma","Stone");
@@ -69,7 +66,6 @@ public class MovieMuseumApplication implements CommandLineRunner {
 		Director francisFordCoppola = new Director("Francis Ford", "Coppola");
 		Director christopherNolan = new Director("Christopher", "Nolan");
 
-		// Add genres to movies
 		shawshank.addGenre(drama);
 		godfather.addGenre(drama);
 		godfather.addGenre(crime);
@@ -78,13 +74,11 @@ public class MovieMuseumApplication implements CommandLineRunner {
 		secondMovieTest.addGenre(action);
 		secondMovieTest.addGenre(drama);
 
-		// Add director to movies
 		shawshank.setDirector(frankDarabont);
 		godfather.setDirector(francisFordCoppola);
 		darkKnight.setDirector(christopherNolan);
 		secondMovieTest.setDirector(christopherNolan);
 
-		// Add actors to movies
 		shawshank.addActor(mattDamon);
 		godfather.addActor(bradPitt);
 		darkKnight.addActor(emmaStone);
@@ -92,17 +86,14 @@ public class MovieMuseumApplication implements CommandLineRunner {
 		secondMovieTest.addActor(emmaTest);
 		secondMovieTest.addActor(emmaStone);
 
-		// Save genres
 		genreRepository.save(drama);
 		genreRepository.save(crime);
 		genreRepository.save(action);
 
-		// Save directors
 		directorRepository.save(frankDarabont);
 		directorRepository.save(francisFordCoppola);
 		directorRepository.save(christopherNolan);
 
-		// Save movies again to update the relationships
 		movieRepository.save(shawshank);
 		movieRepository.save(godfather);
 		movieRepository.save(darkKnight);
