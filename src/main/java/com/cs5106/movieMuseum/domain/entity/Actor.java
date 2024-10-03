@@ -21,7 +21,7 @@ public class Actor {
     private String lastName;
     private int age;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "actors", cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "actors", cascade = CascadeType.REMOVE)
     @JsonIgnore
     private Set<Movie> movies = new HashSet<>();
 
