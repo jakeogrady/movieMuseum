@@ -51,6 +51,16 @@ public class Movie {
     @JsonIgnore
     private Set<Actor> actors = new HashSet<>();
 
+    public void addActor(Actor actor) {
+        this.actors.add(actor);
+        actor.getMovies().add(this);
+    }
+
+    public void removeActor(Actor actor) {
+        this.actors.remove(actor);
+        actor.getMovies().remove(this);
+    }
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "director_id")
     @JsonIgnore
@@ -63,14 +73,5 @@ public class Movie {
         this.imdbRating = imdbRating;
     }
 
-    public void addActor(Actor actor) {
-        this.actors.add(actor);
-        actor.getMovies().add(this);
-    }
-
-    public void removeActor(Actor actor) {
-        this.actors.remove(actor);
-        actor.getMovies().remove(this);
-    }
 
 }

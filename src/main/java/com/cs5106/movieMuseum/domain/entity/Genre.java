@@ -20,7 +20,7 @@ public class Genre {
 
     private String genreName;
 
-    @ManyToMany(mappedBy = "genres", fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "genres", cascade = CascadeType.REMOVE)
     @JsonIgnore
     private Set<Movie> movies = new HashSet<>();
 
