@@ -3,7 +3,6 @@ package com.cs5106.movieMuseum.domain.controller;
 import com.cs5106.movieMuseum.domain.entity.Director;
 import com.cs5106.movieMuseum.domain.entity.Movie;
 import com.cs5106.movieMuseum.domain.repository.DirectorRepository;
-import com.cs5106.movieMuseum.domain.repository.MovieRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,11 +17,9 @@ import static java.lang.String.format;
 @RestController
 public class DirectorController {
     private final DirectorRepository directorRepository;
-    private final MovieRepository movieRepository;
 
-    public DirectorController(DirectorRepository directorRepository, MovieRepository movieRepository) {
+    public DirectorController(DirectorRepository directorRepository) {
         this.directorRepository = directorRepository;
-        this.movieRepository = movieRepository;
     }
 
     @GetMapping("/directors")
@@ -75,21 +72,6 @@ public class DirectorController {
         return directors;
     }
 
-    @PutMapping("/directors/{id}")
-    public ResponseEntity<Director> updateDirector(@PathVariable Long id, @RequestBody Director directorDetails) {
-        Optional<Director> optionalDirector = directorRepository.findById(id);
-
-        if (optionalDirector.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Director director = optionalDirector.get();
-        director.setFirstName(directorDetails.getFirstName());
-        director.setLastName(directorDetails.getLastName());
-        Director updatedDirector = directorRepository.save(director);
-        return ResponseEntity.ok(updatedDirector);
-    }
-
     @GetMapping("/director/{firstName}/{lastName}/movies")
     public Set<Movie> getMoviesByDirector(@PathVariable String firstName, @PathVariable String lastName) {
         Optional<Director> directorOpt = directorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
@@ -107,6 +89,21 @@ public class DirectorController {
         return directorRepository.save(director);
     }
 
+    @PutMapping("/directors/{id}")
+    public ResponseEntity<Director> updateDirector(@PathVariable Long id, @RequestBody Director directorDetails) {
+        Optional<Director> optionalDirector = directorRepository.findById(id);
+
+        if (optionalDirector.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Director director = optionalDirector.get();
+        director.setFirstName(directorDetails.getFirstName());
+        director.setLastName(directorDetails.getLastName());
+        Director updatedDirector = directorRepository.save(director);
+        return ResponseEntity.ok(updatedDirector);
+    }
+
     @PutMapping("/director/{firstName}/{lastName}")
     public ResponseEntity<Director> updateDirector(@PathVariable String firstName, @PathVariable String lastName, @RequestBody Director director) {
         Optional<Director> directorOpt = directorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
@@ -121,44 +118,6 @@ public class DirectorController {
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, format("Director %s %s does not match the path", firstName, lastName));
         }
-    }
-
-    @PutMapping("/director/{firstName}/{lastName}/addMovie/{title}")
-    public ResponseEntity<Set<Movie>> addMovieToDirector(@PathVariable String firstName, @PathVariable String lastName, @PathVariable String title) {
-
-        Optional<Director> directorOpt = directorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
-        if (directorOpt.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Director %s %s not found", firstName, lastName));
-        }
-        Optional<Movie> movieOpt = movieRepository.findDistinctByTitle(title);
-        if (movieOpt.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Movie %s not found", title));
-        }
-
-        directorOpt.get().addMovie(movieOpt.get());
-        movieOpt.get().setDirector(directorOpt.get());
-        directorRepository.save(directorOpt.get());
-        movieRepository.save(movieOpt.get());
-        return ResponseEntity.ok(directorOpt.get().getMovies());
-    }
-
-    @PutMapping("/director/{firstName}/{lastName}/removeMovie/{title}")
-    public ResponseEntity<Set<Movie>> removeMovieFromDirector(@PathVariable String firstName, @PathVariable String lastName, @PathVariable String title) {
-
-        Optional<Director> directorOpt = directorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
-        if (directorOpt.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Director %s %s not found", firstName, lastName));
-        }
-        Optional<Movie> movieOpt = movieRepository.findDistinctByTitle(title);
-        if (movieOpt.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Movie %s not found", title));
-        }
-
-        directorOpt.get().removeMovie(movieOpt.get());
-        movieOpt.get().setDirector(null);
-        directorRepository.save(directorOpt.get());
-        movieRepository.save(movieOpt.get());
-        return ResponseEntity.ok(directorOpt.get().getMovies());
     }
 
     @DeleteMapping("/director/{firstName}/{lastName}")
