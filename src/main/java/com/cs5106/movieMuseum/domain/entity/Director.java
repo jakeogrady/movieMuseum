@@ -1,6 +1,5 @@
 package com.cs5106.movieMuseum.domain.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +22,7 @@ public class Director {
     private String lastName;
     private int age;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "director", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "director", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<Movie> movies = new HashSet<>();
 
@@ -49,4 +48,8 @@ public class Director {
         return firstName + " " + lastName;
     }
 
+    @PreRemove
+    public void removeRelationships(){
+        movies.forEach(m -> m.setDirector(null));
+    }
 }

@@ -21,7 +21,7 @@ public class Actor {
     private String lastName;
     private int age;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "actors", cascade = CascadeType.REMOVE)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "actors")
     @JsonIgnore
     private Set<Movie> movies = new HashSet<>();
 
@@ -40,6 +40,11 @@ public class Actor {
     public void removeMovie(Movie movie) {
         this.movies.remove(movie);
         movie.removeActor(this);
+    }
+
+    @PreRemove
+    public void removeRelationships(){
+        movies.forEach(m -> m.getActors().remove(this));
     }
 
 }

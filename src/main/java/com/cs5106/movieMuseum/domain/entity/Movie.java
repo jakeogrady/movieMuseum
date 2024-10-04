@@ -74,4 +74,12 @@ public class Movie {
         this.actors.remove(actor);
         actor.getMovies().remove(this);
     }
+
+    @PreRemove
+    public void removeRelationships(){
+        actors.forEach(a -> a.getMovies().remove(this));
+        genres.forEach(g -> g.getMovies().remove(this));
+        director.getMovies().remove(this);
+    }
+
 }
