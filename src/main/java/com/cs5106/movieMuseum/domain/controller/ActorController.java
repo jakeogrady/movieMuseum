@@ -90,7 +90,8 @@ public class ActorController {
     }
 
     @PutMapping("/actor/{firstName}/{lastName}")
-    public ResponseEntity<Actor> updateActor(@PathVariable String firstName, @PathVariable String lastName, @RequestBody Actor actor) {
+    @ResponseStatus(HttpStatus.OK)
+    public Actor updateActor(@PathVariable String firstName, @PathVariable String lastName, @RequestBody Actor actor) {
         Optional<Actor> actorOpt = actorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
         if (actorOpt.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Actor %s %s not found", firstName, lastName));
@@ -99,7 +100,7 @@ public class ActorController {
         if (actor.getFirstName().equals(firstName) && actor.getLastName().equals(lastName)) {
             actor.setId(actorOpt.get().getId());
             actorRepository.save(actor);
-            return ResponseEntity.ok(actor);
+            return actor;
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, format("Actor %s %s does not match the path", firstName, lastName));
         }

@@ -1,6 +1,5 @@
 package com.cs5106.movieMuseum.domain.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +19,7 @@ public class Genre {
 
     private String genreName;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "genres", cascade = CascadeType.REMOVE)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "genres")
     @JsonIgnore
     private Set<Movie> movies = new HashSet<>();
 
@@ -37,6 +36,11 @@ public class Genre {
     public void removeMovie(Movie movie) {
         this.movies.remove(movie);
         movie.getGenres().remove(this);
+    }
+
+    @PreRemove
+    public void removeRelationships(){
+        movies.forEach(m -> m.getGenres().remove(this));
     }
 
 }
