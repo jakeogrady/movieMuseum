@@ -41,12 +41,12 @@ public class MovieMuseumApplication implements CommandLineRunner {
 		Movie shawshank = new Movie("The Shawshank Redemption", 1994, 9.3);
 		Movie godfather = new Movie("The Godfather", 1972, 9.2);
 		Movie darkKnight = new Movie("The Dark Knight", 2008, 9.0);
-		Movie secondMovieTest = new Movie("Second Movie Test", 2021, 8.0);
+		Movie interstellar = new Movie("Interstellar", 2014, 8.5);
 
 		movieRepository.save(shawshank);
 		movieRepository.save(godfather);
 		movieRepository.save(darkKnight);
-		movieRepository.save(secondMovieTest);
+		movieRepository.save(interstellar);
 
 		Genre drama = new Genre("Drama");
 		Genre crime = new Genre("Crime");
@@ -55,12 +55,12 @@ public class MovieMuseumApplication implements CommandLineRunner {
 		Actor mattDamon = new Actor("Matt","Damon", 50);
 		Actor bradPitt = new Actor("Brad","Pitt", 57);
 		Actor emmaStone = new Actor("Emma","Stone", 32);
-		Actor emmaTest = new Actor("Emma", "Test", 69);
+		Actor dwayneJohnson = new Actor("Dwayne", "Johnson", 53);
 
 		actorRepository.save(mattDamon);
 		actorRepository.save(bradPitt);
 		actorRepository.save(emmaStone);
-		actorRepository.save(emmaTest);
+		actorRepository.save(dwayneJohnson);
 
 		Director frankDarabont = new Director("Frank", "Darabont", 64);
 		Director francisFordCoppola = new Director("Francis Ford", "Coppola", 85);
@@ -71,20 +71,20 @@ public class MovieMuseumApplication implements CommandLineRunner {
 		godfather.addGenre(crime);
 		darkKnight.addGenre(action);
 		darkKnight.addGenre(crime);
-		secondMovieTest.addGenre(action);
-		secondMovieTest.addGenre(drama);
+		interstellar.addGenre(action);
+		interstellar.addGenre(drama);
 
 		shawshank.setDirector(frankDarabont);
 		godfather.setDirector(francisFordCoppola);
 		darkKnight.setDirector(christopherNolan);
-		secondMovieTest.setDirector(christopherNolan);
+		interstellar.setDirector(christopherNolan);
 
 		shawshank.addActor(mattDamon);
 		godfather.addActor(bradPitt);
 		darkKnight.addActor(emmaStone);
-		darkKnight.addActor(emmaTest);
-		secondMovieTest.addActor(emmaTest);
-		secondMovieTest.addActor(emmaStone);
+		darkKnight.addActor(dwayneJohnson);
+		interstellar.addActor(dwayneJohnson);
+		interstellar.addActor(emmaStone);
 
 		genreRepository.save(drama);
 		genreRepository.save(crime);
@@ -94,22 +94,31 @@ public class MovieMuseumApplication implements CommandLineRunner {
 		directorRepository.save(francisFordCoppola);
 		directorRepository.save(christopherNolan);
 
+		// Save movies again to update relationships
 		movieRepository.save(shawshank);
 		movieRepository.save(godfather);
 		movieRepository.save(darkKnight);
-		movieRepository.save(secondMovieTest);
+		movieRepository.save(interstellar);
 
-		logger.info("Movies and genres saved to database.");
-		logger.info("MovieRepository {}", movieRepository.findAll());
+		logger.info("Movies saved to database.");
 		for (Movie movie : movieRepository.findAll()) {
 			logger.info("Title: {}, Director: {}, Release Year: {}, IMDB Rating: {}",
 					movie.getTitle(), movie.getDirector(), movie.getReleaseYear(), movie.getImdbRating());
 		}
 
-		for (Actor actor: actorRepository.findAll()){
-			logger.info("First Name {}, Last Name {}", actor.getFirstName(), actor.getLastName());
+		logger.info("Genres saved to database.");
+		for (Genre genre : genreRepository.findAll()) {
+			logger.info("Genre: {}", genre.getGenreName());
 		}
 
+		logger.info("Actors saved to database.");
+		for (Actor actor: actorRepository.findAll()){
+			logger.info("First Name: {}, Last Name: {}, Age: {}", actor.getFirstName(), actor.getLastName(), actor.getAge());
+		}
 
+		logger.info("Directors saved to database.");
+		for (Director director: directorRepository.findAll()){
+			logger.info("First Name: {}, Last Name: {}, Age: {}", director.getFirstName(), director.getLastName(), director.getAge());
+		}
 	}
 }

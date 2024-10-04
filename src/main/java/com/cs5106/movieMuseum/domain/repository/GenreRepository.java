@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GenreRepository extends CrudRepository<Genre, Long> {
-    Optional<Genre> findByGenreName(String genreName);
+    Optional<Genre> findDistinctByGenreName(String genreName);
 
     @Query("SELECT g FROM Genre g WHERE g.genreName LIKE %:genreName%")
     List<Genre> findGenresByGenreNameSubstring(String genreName);
