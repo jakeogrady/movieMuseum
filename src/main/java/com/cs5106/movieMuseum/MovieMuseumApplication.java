@@ -94,22 +94,31 @@ public class MovieMuseumApplication implements CommandLineRunner {
 		directorRepository.save(francisFordCoppola);
 		directorRepository.save(christopherNolan);
 
+		// Save movies again to update relationships
 		movieRepository.save(shawshank);
 		movieRepository.save(godfather);
 		movieRepository.save(darkKnight);
 		movieRepository.save(secondMovieTest);
 
-		logger.info("Movies and genres saved to database.");
-		logger.info("MovieRepository {}", movieRepository.findAll());
+		logger.info("Movies saved to database.");
 		for (Movie movie : movieRepository.findAll()) {
 			logger.info("Title: {}, Director: {}, Release Year: {}, IMDB Rating: {}",
 					movie.getTitle(), movie.getDirector(), movie.getReleaseYear(), movie.getImdbRating());
 		}
 
-		for (Actor actor: actorRepository.findAll()){
-			logger.info("First Name {}, Last Name {}", actor.getFirstName(), actor.getLastName());
+		logger.info("Genres saved to database.");
+		for (Genre genre : genreRepository.findAll()) {
+			logger.info("Genre: {}", genre.getGenreName());
 		}
 
+		logger.info("Actors saved to database.");
+		for (Actor actor: actorRepository.findAll()){
+			logger.info("First Name: {}, Last Name: {}, Age: {}", actor.getFirstName(), actor.getLastName(), actor.getAge());
+		}
 
+		logger.info("Directors saved to database.");
+		for (Director director: directorRepository.findAll()){
+			logger.info("First Name: {}, Last Name: {}, Age: {}", director.getFirstName(), director.getLastName(), director.getAge());
+		}
 	}
 }

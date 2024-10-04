@@ -35,7 +35,7 @@ public class GenreController {
 
     @GetMapping("/genre/genreName/{genreName}")
     public Genre getGenreByGenreName(@PathVariable String genreName) {
-        Optional<Genre> genreOptional = genreRepository.findByGenreName(genreName);
+        Optional<Genre> genreOptional = genreRepository.findDistinctByGenreName(genreName);
         if(genreOptional.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Genre %s not found", genreName));
         }
@@ -53,7 +53,7 @@ public class GenreController {
 
     @GetMapping("/genre/movies/{genre}")
     public Set<Movie> getMoviesByGenre(@PathVariable String genre) {
-        Optional<Genre> genreOptional = genreRepository.findByGenreName(genre);
+        Optional<Genre> genreOptional = genreRepository.findDistinctByGenreName(genre);
         if(genreOptional.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Genre %s not found", genre));
         }
@@ -62,7 +62,7 @@ public class GenreController {
 
     @PostMapping("/genre")
     public Genre addGenre(@RequestBody Genre genre) {
-        if (genreRepository.findByGenreName(genre.getGenreName()).isPresent()) {
+        if (genreRepository.findDistinctByGenreName(genre.getGenreName()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, format("Genre %s already exists", genre.getGenreName()));
         }
         return genreRepository.save(genre);
@@ -70,7 +70,7 @@ public class GenreController {
 
     @PutMapping("/genre/{genreName}/addMovie/{title}")
     public void addGenreToMovie(@PathVariable String genreName, @PathVariable String title) {
-        Optional<Genre> genreOptional = genreRepository.findByGenreName(genreName);
+        Optional<Genre> genreOptional = genreRepository.findDistinctByGenreName(genreName);
         if(genreOptional.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Genre %s not found", genreName));
         }
@@ -87,7 +87,7 @@ public class GenreController {
     @DeleteMapping("/genre/{genreName}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteGenre(@PathVariable String genreName) {
-        Optional<Genre> genreOptional = genreRepository.findByGenreName(genreName);
+        Optional<Genre> genreOptional = genreRepository.findDistinctByGenreName(genreName);
         if(genreOptional.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Genre %s not found", genreName));
         }

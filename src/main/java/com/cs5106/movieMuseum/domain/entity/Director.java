@@ -18,6 +18,7 @@ public class Director {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    // NOTE: Combination of firstname + lastname will always be unique
     private String firstName;
     private String lastName;
     private int age;

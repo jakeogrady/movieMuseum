@@ -75,18 +75,6 @@ public class DirectorController {
         return directors;
     }
 
-    @GetMapping("/directors/{id}")
-    public ResponseEntity<Director> getDirectorById(@PathVariable Long id) {
-        Optional<Director> optionalDirector = directorRepository.findById(id);
-
-        if (optionalDirector.isPresent()) {
-            Director director = optionalDirector.get();
-            return ResponseEntity.ok(director);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
     @PutMapping("/directors/{id}")
     public ResponseEntity<Director> updateDirector(@PathVariable Long id, @RequestBody Director directorDetails) {
         Optional<Director> optionalDirector = directorRepository.findById(id);
@@ -120,7 +108,7 @@ public class DirectorController {
     }
 
     @PutMapping("/director/{firstName}/{lastName}")
-    public void updateDirector(@PathVariable String firstName, @PathVariable String lastName, @RequestBody Director director) {
+    public ResponseEntity<Director> updateDirector(@PathVariable String firstName, @PathVariable String lastName, @RequestBody Director director) {
         Optional<Director> directorOpt = directorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
         if (directorOpt.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Director %s %s not found", firstName, lastName));
@@ -129,13 +117,14 @@ public class DirectorController {
         if (director.getFirstName().toLowerCase().equals(firstName) && director.getLastName().toLowerCase().equals(lastName)) {
             director.setId(directorOpt.get().getId());
             directorRepository.save(director);
+            return ResponseEntity.ok(director);
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, format("Director %s %s does not match the path", firstName, lastName));
         }
     }
 
     @PutMapping("/director/{firstName}/{lastName}/addMovie/{title}")
-    public void addMovieToDirector(@PathVariable String firstName, @PathVariable String lastName, @PathVariable String title) {
+    public ResponseEntity<Set<Movie>> addMovieToDirector(@PathVariable String firstName, @PathVariable String lastName, @PathVariable String title) {
 
         Optional<Director> directorOpt = directorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
         if (directorOpt.isEmpty()) {
@@ -149,10 +138,11 @@ public class DirectorController {
         directorOpt.get().addMovie(movieOpt.get());
         directorRepository.save(directorOpt.get());
         movieRepository.save(movieOpt.get());
+        return ResponseEntity.ok(directorOpt.get().getMovies());
     }
 
     @PutMapping("/director/{firstName}/{lastName}/removeMovie/{title}")
-    public void removeMovieFromDirector(@PathVariable String firstName, @PathVariable String lastName, @PathVariable String title) {
+    public ResponseEntity<Set<Movie>> removeMovieFromDirector(@PathVariable String firstName, @PathVariable String lastName, @PathVariable String title) {
 
         Optional<Director> directorOpt = directorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
         if (directorOpt.isEmpty()) {
@@ -165,23 +155,12 @@ public class DirectorController {
 
         directorOpt.get().removeMovie(movieOpt.get());
         directorRepository.save(directorOpt.get());
-    }
-
-    @DeleteMapping("/directors/{id}")
-    public ResponseEntity<Director> deleteDirectorById(@PathVariable Long id) {
-        Optional<Director> optionalDirector = directorRepository.findById(id);
-        if (optionalDirector.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Director director = optionalDirector.get();
-        directorRepository.delete(director);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(directorOpt.get().getMovies());
     }
 
     @DeleteMapping("/director/{firstName}/{lastName}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteDirectorByFullName(@PathVariable String firstName, @PathVariable String lastName) {
+    public void deleteDirector(@PathVariable String firstName, @PathVariable String lastName) {
         Optional<Director> directorOpt = directorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
         if (directorOpt.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Director %s %s not found", firstName, lastName));
