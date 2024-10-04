@@ -102,7 +102,14 @@ public class MovieController {
         return movieOpt.get().getDirector();
     }
 
-    // TODO: GET MOVIE GENRES @GetMapping
+    @GetMapping("/movie/{title}/genre")
+    public Set<Genre> getMovieGenres(@PathVariable String title) {
+        Optional<Movie> movieOpt = movieRepository.findDistinctByTitle(title);
+        if (movieOpt.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Movie %s not found", title));
+        }
+        return movieOpt.get().getGenres();
+    }
 
     @PostMapping("/movie")
     public Movie addMovie(@RequestBody Movie movie) {

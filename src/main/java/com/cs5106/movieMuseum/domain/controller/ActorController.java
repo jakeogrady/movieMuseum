@@ -5,6 +5,7 @@ import com.cs5106.movieMuseum.domain.entity.Movie;
 import com.cs5106.movieMuseum.domain.repository.ActorRepository;
 import com.cs5106.movieMuseum.domain.repository.MovieRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -36,7 +37,6 @@ public class ActorController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Actor %s not found", firstName));
         }
         return actors;
-
     }
 
     @GetMapping("/actors/lastName/{lastName}")
@@ -93,7 +93,7 @@ public class ActorController {
     }
 
     @PutMapping("/actor/{firstName}/{lastName}")
-    public void updateActor(@PathVariable String firstName, @PathVariable String lastName, @RequestBody Actor actor) {
+    public ResponseEntity<Actor> updateActor(@PathVariable String firstName, @PathVariable String lastName, @RequestBody Actor actor) {
         Optional<Actor> actorOpt = actorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
         if (actorOpt.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Actor %s %s not found", firstName, lastName));
@@ -102,13 +102,14 @@ public class ActorController {
         if (actor.getFirstName().equals(firstName) && actor.getLastName().equals(lastName)) {
             actor.setId(actorOpt.get().getId());
             actorRepository.save(actor);
+            return ResponseEntity.ok(actor);
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, format("Actor %s %s does not match the path", firstName, lastName));
         }
     }
 
     @PutMapping("/actor/{firstName}/{lastName}/addMovie/{title}")
-    public void addMovieToActor(@PathVariable String firstName, @PathVariable String lastName, @PathVariable String title) {
+    public ResponseEntity<Set<Movie>> addMovieToActor(@PathVariable String firstName, @PathVariable String lastName, @PathVariable String title) {
 
         Optional<Actor> actorOpt = actorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
         if (actorOpt.isEmpty()) {
@@ -120,12 +121,14 @@ public class ActorController {
         }
 
         actorOpt.get().addMovie(movieOpt.get());
+        movieOpt.get().addActor(actorOpt.get());
         actorRepository.save(actorOpt.get());
         movieRepository.save(movieOpt.get());
+        return ResponseEntity.ok(actorOpt.get().getMovies());
     }
 
     @PutMapping("/actor/{firstName}/{lastName}/removeMovie/{title}")
-    public void removeMovieFromActor(@PathVariable String firstName, @PathVariable String lastName, @PathVariable String title) {
+    public ResponseEntity<Set<Movie>> removeMovieFromActor(@PathVariable String firstName, @PathVariable String lastName, @PathVariable String title) {
 
         Optional<Actor> actorOpt = actorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
         if (actorOpt.isEmpty()) {
@@ -137,7 +140,10 @@ public class ActorController {
         }
 
         actorOpt.get().removeMovie(movieOpt.get());
+        movieOpt.get().removeActor(actorOpt.get());
         actorRepository.save(actorOpt.get());
+        movieRepository.save(movieOpt.get());
+        return ResponseEntity.ok(actorOpt.get().getMovies());
     }
 
     @DeleteMapping("/actor/{firstName}/{lastName}")

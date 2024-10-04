@@ -69,7 +69,7 @@ public class GenreController {
     }
 
     @PutMapping("/genre/{genreName}/addMovie/{title}")
-    public void addGenreToMovie(@PathVariable String genreName, @PathVariable String title) {
+    public ResponseEntity<Set<Genre>> addGenreToMovie(@PathVariable String genreName, @PathVariable String title) {
         Optional<Genre> genreOptional = genreRepository.findDistinctByGenreName(genreName);
         if(genreOptional.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Genre %s not found", genreName));
@@ -80,8 +80,28 @@ public class GenreController {
         }
 
         genreOptional.get().addMovie(movieOptional.get());
+        movieOptional.get().addGenre(genreOptional.get());
         genreRepository.save(genreOptional.get());
         movieRepository.save(movieOptional.get());
+        return ResponseEntity.ok(movieOptional.get().getGenres());
+    }
+
+    @PutMapping("/genre/{genreName}/removeMovie/{title}")
+    public ResponseEntity<Set<Genre>> removeGenreFromMovie(@PathVariable String genreName, @PathVariable String title) {
+        Optional<Genre> genreOptional = genreRepository.findDistinctByGenreName(genreName);
+        if(genreOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Genre %s not found", genreName));
+        }
+        Optional<Movie> movieOptional = movieRepository.findDistinctByTitle(title);
+        if(movieOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Movie %s not found", title));
+        }
+
+        genreOptional.get().removeMovie(movieOptional.get());
+        movieOptional.get().removeGenre(genreOptional.get());
+        genreRepository.save(genreOptional.get());
+        movieRepository.save(movieOptional.get());
+        return ResponseEntity.ok(movieOptional.get().getGenres());
     }
 
     @DeleteMapping("/genre/{genreName}")

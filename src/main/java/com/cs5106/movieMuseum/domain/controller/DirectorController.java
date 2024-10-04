@@ -48,7 +48,7 @@ public class DirectorController {
         return directors;
     }
 
-    @GetMapping("/directors/{firstName}/{lastName}")
+    @GetMapping("/director/{firstName}/{lastName}")
     public Director getDirectorByFirstNameAndLastName(@PathVariable String firstName, @PathVariable String lastName) {
         Optional<Director> directorOpt = directorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
         if (directorOpt.isEmpty()) {
@@ -136,6 +136,7 @@ public class DirectorController {
         }
 
         directorOpt.get().addMovie(movieOpt.get());
+        movieOpt.get().setDirector(directorOpt.get());
         directorRepository.save(directorOpt.get());
         movieRepository.save(movieOpt.get());
         return ResponseEntity.ok(directorOpt.get().getMovies());
@@ -154,7 +155,9 @@ public class DirectorController {
         }
 
         directorOpt.get().removeMovie(movieOpt.get());
+        movieOpt.get().setDirector(null);
         directorRepository.save(directorOpt.get());
+        movieRepository.save(movieOpt.get());
         return ResponseEntity.ok(directorOpt.get().getMovies());
     }
 
