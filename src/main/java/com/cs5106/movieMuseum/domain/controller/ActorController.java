@@ -24,6 +24,7 @@ public class ActorController {
 
     @GetMapping("/actors")
     public Iterable<Actor> getActors() {
+        System.out.println("Getting all actors");
         return actorRepository.findAll();
     }
 
