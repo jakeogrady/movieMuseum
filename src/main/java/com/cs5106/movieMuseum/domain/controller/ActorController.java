@@ -109,13 +109,13 @@ public class ActorController {
 
     @PutMapping("/actors/put")
     @ResponseStatus(HttpStatus.OK)
-    public void updateActors(@RequestBody List<Actor> newActorData, @RequestBody long[] ids) {
+    public void updateActors(@RequestBody List<Actor> newActorData) {
         for (int i = 0; i < newActorData.size(); i++) {
-            Optional<Actor> actorOpt = actorRepository.findById(ids[i]);
+            Optional<Actor> actorOpt = actorRepository.findById(newActorData.get(i).getId());
             if (actorOpt.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Actor with id %d not found", ids[i]));
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Actor with id %d not found", newActorData.get(i).getId()));
             }
-            System.out.println("Updating actor with id " + ids[i]);
+            System.out.println("Updating actor with id " + newActorData.get(i).getId());
             Actor actor = actorOpt.get();
             actor.setFirstName(newActorData.get(i).getFirstName());
             actor.setLastName(newActorData.get(i).getLastName());
