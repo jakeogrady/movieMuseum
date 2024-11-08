@@ -90,22 +90,22 @@ public class ActorController {
         return actorRepository.save(actor);
     }
 
-    @PutMapping("/actor/{firstName}/{lastName}")
-    @ResponseStatus(HttpStatus.OK)
-    public Actor updateActor(@PathVariable String firstName, @PathVariable String lastName, @RequestBody Actor actor) {
-        Optional<Actor> actorOpt = actorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
-        if (actorOpt.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Actor %s %s not found", firstName, lastName));
-        }
-
-        if (actor.getFirstName().equals(firstName) && actor.getLastName().equals(lastName)) {
-            actor.setId(actorOpt.get().getId());
-            actorRepository.save(actor);
-            return actor;
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, format("Actor %s %s does not match the path", firstName, lastName));
-        }
-    }
+//    @PutMapping("/actor/{firstName}/{lastName}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public Actor updateActor(@PathVariable String firstName, @PathVariable String lastName, @RequestBody Actor actor) {
+//        Optional<Actor> actorOpt = actorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
+//        if (actorOpt.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Actor %s %s not found", firstName, lastName));
+//        }
+//
+//        if (actor.getFirstName().equals(firstName) && actor.getLastName().equals(lastName)) {
+//            actor.setId(actorOpt.get().getId());
+//            actorRepository.save(actor);
+//            return actor;
+//        } else {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, format("Actor %s %s does not match the path", firstName, lastName));
+//        }
+//    }
 
     @PutMapping("/actors/put")
     @ResponseStatus(HttpStatus.OK)
@@ -134,5 +134,16 @@ public class ActorController {
         actorRepository.delete(actor.get());
     }
 
-
+    @DeleteMapping("/actors/delete")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteActors(@RequestBody long[] actorIds) {
+        for (long actorId : actorIds) {
+            Optional<Actor> actor = actorRepository.findById(actorId);
+            if (actor.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Actor with id %d not found", actorId));
+            }
+            System.out.println("Deleting actor with id " + actorId);
+            actorRepository.delete(actor.get());
+        }
+    }
 }
