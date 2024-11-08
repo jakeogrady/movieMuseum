@@ -119,6 +119,7 @@ public class ActorController {
             Actor actor = actorOpt.get();
             actor.setFirstName(newActorData.get(i).getFirstName());
             actor.setLastName(newActorData.get(i).getLastName());
+            actor.setAge(newActorData.get(i).getAge());
             actorRepository.save(actor);
         }
     }
