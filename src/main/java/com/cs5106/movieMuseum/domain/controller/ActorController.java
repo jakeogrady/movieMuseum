@@ -107,6 +107,22 @@ public class ActorController {
         }
     }
 
+    @PutMapping("/actors/put")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateActors(@RequestBody List<Actor> newActorData, @RequestBody long[] ids) {
+        for (int i = 0; i < newActorData.size(); i++) {
+            Optional<Actor> actorOpt = actorRepository.findById(ids[i]);
+            if (actorOpt.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Actor with id %d not found", ids[i]));
+            }
+            System.out.println("Updating actor with id " + ids[i]);
+            Actor actor = actorOpt.get();
+            actor.setFirstName(newActorData.get(i).getFirstName());
+            actor.setLastName(newActorData.get(i).getLastName());
+            actorRepository.save(actor);
+        }
+    }
+
     @DeleteMapping("/actor/{firstName}/{lastName}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteActor(@PathVariable String firstName, @PathVariable String lastName) {
