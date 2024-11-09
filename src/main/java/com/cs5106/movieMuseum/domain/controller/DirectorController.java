@@ -89,44 +89,49 @@ public class DirectorController {
         return directorRepository.save(director);
     }
 
-    @PutMapping("/directors/{id}")
-    public ResponseEntity<Director> updateDirector(@PathVariable Long id, @RequestBody Director directorDetails) {
-        Optional<Director> optionalDirector = directorRepository.findById(id);
+//    @PutMapping("/director/{firstName}/{lastName}")
+//    public ResponseEntity<Director> updateDirector(@PathVariable String firstName, @PathVariable String lastName, @RequestBody Director director) {
+//        Optional<Director> directorOpt = directorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
+//        if (directorOpt.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Director %s %s not found", firstName, lastName));
+//        }
+//
+//        if (director.getFirstName().toLowerCase().equals(firstName) && director.getLastName().toLowerCase().equals(lastName)) {
+//            director.setId(directorOpt.get().getId());
+//            directorRepository.save(director);
+//            return ResponseEntity.ok(director);
+//        } else {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, format("Director %s %s does not match the path", firstName, lastName));
+//        }
+//    }
 
-        if (optionalDirector.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Director director = optionalDirector.get();
-        director.setFirstName(directorDetails.getFirstName());
-        director.setLastName(directorDetails.getLastName());
-        Director updatedDirector = directorRepository.save(director);
-        return ResponseEntity.ok(updatedDirector);
-    }
-
-    @PutMapping("/director/{firstName}/{lastName}")
-    public ResponseEntity<Director> updateDirector(@PathVariable String firstName, @PathVariable String lastName, @RequestBody Director director) {
-        Optional<Director> directorOpt = directorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
-        if (directorOpt.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Director %s %s not found", firstName, lastName));
-        }
-
-        if (director.getFirstName().toLowerCase().equals(firstName) && director.getLastName().toLowerCase().equals(lastName)) {
-            director.setId(directorOpt.get().getId());
+    @PutMapping("directors/put")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateDirectors(@RequestBody List<Director> newDirectorData) {
+        for (int i = 0; i < newDirectorData.size(); i++) {
+            Optional<Director> directorOpt = directorRepository.findById(newDirectorData.get(i).getId());
+            if (directorOpt.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Director with id %d not found", newDirectorData.get(i).getId()));
+            }
+            System.out.println("Updating director with id " + newDirectorData.get(i).getId());
+            Director director = directorOpt.get();
+            director.setFirstName(newDirectorData.get(i).getFirstName());
+            director.setLastName(newDirectorData.get(i).getLastName());
+            director.setAge(newDirectorData.get(i).getAge());
             directorRepository.save(director);
-            return ResponseEntity.ok(director);
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, format("Director %s %s does not match the path", firstName, lastName));
         }
     }
 
-    @DeleteMapping("/director/{firstName}/{lastName}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteDirector(@PathVariable String firstName, @PathVariable String lastName) {
-        Optional<Director> directorOpt = directorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
-        if (directorOpt.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Director %s %s not found", firstName, lastName));
+    @DeleteMapping("/directors/delete")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteDirectors(@RequestBody long[] directorIds) {
+        for (long directorId : directorIds) {
+            Optional<Director> directorOpt = directorRepository.findById(directorId);
+            if (directorOpt.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Director with id %d not found", directorId));
+            }
+            System.out.println("Deleting director with id " + directorId);
+            directorRepository.delete(directorOpt.get());
         }
-        directorRepository.delete(directorOpt.get());
     }
 }

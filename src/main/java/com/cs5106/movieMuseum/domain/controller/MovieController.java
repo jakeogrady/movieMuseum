@@ -119,19 +119,36 @@ public class MovieController {
         return movieRepository.save(movie);
     }
 
-    @PutMapping("/movie/{title}")
-    public ResponseEntity<Movie> updateMovie(@PathVariable String title, @RequestBody Movie movie) {
-        Optional<Movie> movieOpt = movieRepository.findDistinctByTitle(title);
-        if (movieOpt.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Movie %s not found", title));
-        }
+//    @PutMapping("/movie/{title}")
+//    public ResponseEntity<Movie> updateMovie(@PathVariable String title, @RequestBody Movie movie) {
+//        Optional<Movie> movieOpt = movieRepository.findDistinctByTitle(title);
+//        if (movieOpt.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Movie %s not found", title));
+//        }
+//
+//        if (movie.getTitle().equals(title) ) {
+//            movie.setId(movieOpt.get().getId());
+//            movieRepository.save(movie);
+//            return ResponseEntity.ok(movie);
+//        } else {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, format("Movie %s does not match the path", title));
+//        }
+//    }
 
-        if (movie.getTitle().equals(title) ) {
-            movie.setId(movieOpt.get().getId());
+    @PutMapping("/movies/put")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateMovies(@RequestBody List<Movie> newMovieData) {
+        for (int i = 0; i < newMovieData.size(); i++) {
+            Optional<Movie> movieOpt = movieRepository.findById(newMovieData.get(i).getId());
+            if (movieOpt.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Movie with id %d not found", newMovieData.get(i).getId()));
+            }
+            System.out.println("Updating movie with id " + newMovieData.get(i).getId());
+            Movie movie = movieOpt.get();
+            movie.setTitle(newMovieData.get(i).getTitle());
+            movie.setImdbRating(newMovieData.get(i).getImdbRating());
+            movie.setReleaseYear(newMovieData.get(i).getReleaseYear());
             movieRepository.save(movie);
-            return ResponseEntity.ok(movie);
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, format("Movie %s does not match the path", title));
         }
     }
 
@@ -243,13 +260,16 @@ public class MovieController {
         directorRepository.save(directorOpt.get());
     }
 
-    @DeleteMapping("/movie/{title}")
+    @DeleteMapping("/movies/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteMovie(@PathVariable String title) {
-        Optional<Movie> movieOpt = movieRepository.findDistinctByTitle(title);
-        if (movieOpt.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Movie %s not found", title));
+    public void deleteMovies(@RequestBody long[] movieIds) {
+        for (long movieId : movieIds) {
+            Optional<Movie> movieOpt = movieRepository.findById(movieId);
+            if (movieOpt.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Movie with id %d not found", movieId));
+            }
+            System.out.println("Deleting movie with id " + movieId);
+            movieRepository.delete(movieOpt.get());
         }
-        movieRepository.delete(movieOpt.get());
     }
 }

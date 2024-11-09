@@ -124,26 +124,16 @@ public class ActorController {
         }
     }
 
-    @DeleteMapping("/actor/{firstName}/{lastName}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteActor(@PathVariable String firstName, @PathVariable String lastName) {
-        Optional<Actor> actor = actorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
-        if (actor.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Actor %s %s not found", firstName, lastName));
-        }
-        actorRepository.delete(actor.get());
-    }
-
     @DeleteMapping("/actors/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteActors(@RequestBody long[] actorIds) {
         for (long actorId : actorIds) {
-            Optional<Actor> actor = actorRepository.findById(actorId);
-            if (actor.isEmpty()) {
+            Optional<Actor> actorOpt = actorRepository.findById(actorId);
+            if (actorOpt.isEmpty()) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Actor with id %d not found", actorId));
             }
             System.out.println("Deleting actor with id " + actorId);
-            actorRepository.delete(actor.get());
+            actorRepository.delete(actorOpt.get());
         }
     }
 }
