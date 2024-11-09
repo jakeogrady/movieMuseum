@@ -61,13 +61,31 @@ public class GenreController {
         return genreRepository.save(genre);
     }
 
-    @DeleteMapping("/genre/{genreName}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteGenre(@PathVariable String genreName) {
-        Optional<Genre> genreOptional = genreRepository.findDistinctByGenreName(genreName);
-        if(genreOptional.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Genre %s not found", genreName));
+    @PutMapping("genres/put")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateGenres(@RequestBody List<Genre> newGenreData) {
+        for (int i = 0; i < newGenreData.size(); i++) {
+            Optional<Genre> genreOpt = genreRepository.findById(newGenreData.get(i).getId());
+            if (genreOpt.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Genre with id %d not found", newGenreData.get(i).getId()));
+            }
+            System.out.println("Updating genre with id " + newGenreData.get(i).getId());
+            Genre genre = genreOpt.get();
+            genre.setGenreName(newGenreData.get(i).getGenreName());
+            genreRepository.save(genre);
         }
-        genreRepository.delete(genreOptional.get());
+    }
+
+    @DeleteMapping("/genres/delete")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteGenres(@RequestBody long[] genreIds) {
+        for (long genreId : genreIds) {
+            Optional<Genre> genreOpt = genreRepository.findById(genreId);
+            if (genreOpt.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Genre with id %d not found", genreId));
+            }
+            System.out.println("Deleting genre with id " + genreId);
+            genreRepository.delete(genreOpt.get());
+        }
     }
 }
