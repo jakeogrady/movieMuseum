@@ -82,12 +82,18 @@ public class ActorController {
         return actorOpt.get().getMovies();
     }
 
-    @PostMapping("/actors")
+    @PostMapping("/actor/post")
     public Actor addActor(@RequestBody Actor actor) {
+        System.out.println("Adding actor " + actor.getFirstName() + " " + actor.getLastName());
         if (actorRepository.findDistinctByFirstNameAndLastName(actor.getFirstName(), actor.getLastName()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, format("Actor %s %s already exists", actor.getFirstName(), actor.getLastName()));
         }
         return actorRepository.save(actor);
+    }
+
+    @PostMapping("/actors/post")
+    public void addActors(@RequestBody List<Actor> actor) {
+        actor.forEach(this::addActor);
     }
 
 //    @PutMapping("/actor/{firstName}/{lastName}")
