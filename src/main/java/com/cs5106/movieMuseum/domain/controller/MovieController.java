@@ -111,7 +111,7 @@ public class MovieController {
         return movieOpt.get().getGenres();
     }
 
-    @PostMapping("/movie")
+    @PostMapping("/movie/post")
     public Movie addMovie(@RequestBody Movie movie) {
         if (movieRepository.findDistinctByTitle(movie.getTitle()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, format("Movie %s already exists", movie.getTitle()));

@@ -53,7 +53,7 @@ public class GenreController {
         return genreOptional.get().getMovies();
     }
 
-    @PostMapping("/genre")
+    @PostMapping("/genre/post")
     public Genre addGenre(@RequestBody Genre genre) {
         if (genreRepository.findDistinctByGenreName(genre.getGenreName()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, format("Genre %s already exists", genre.getGenreName()));
