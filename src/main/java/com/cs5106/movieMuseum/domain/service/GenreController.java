@@ -1,4 +1,4 @@
-package com.cs5106.movieMuseum.domain.controller;
+package com.cs5106.movieMuseum.domain.service;
 
 import com.cs5106.movieMuseum.domain.entity.Genre;
 import com.cs5106.movieMuseum.domain.entity.Movie;
@@ -7,8 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static java.lang.String.format;
