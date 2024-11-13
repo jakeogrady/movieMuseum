@@ -1,33 +1,29 @@
 package com.cs5106.movieMuseum.domain.service;
 
 import com.cs5106.movieMuseum.domain.entity.Director;
-import com.cs5106.movieMuseum.domain.entity.Movie;
 import com.cs5106.movieMuseum.domain.repository.DirectorRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static java.lang.String.format;
 
-@RestController
-public class DirectorController {
+@Service
+public class DirectorService {
     private final DirectorRepository directorRepository;
 
-    public DirectorController(DirectorRepository directorRepository) {
+    public DirectorService(DirectorRepository directorRepository) {
         this.directorRepository = directorRepository;
     }
 
-    @GetMapping("/directors")
     public Iterable<Director> getDirectors() {
         return directorRepository.findAll();
     }
 
-    @GetMapping("/directors/firstName/{firstName}")
-    public List<Director> getDirectorsByFirstName(@PathVariable String firstName) {
+    public List<Director> getDirectorsByFirstName(String firstName) {
         List<Director> directors = directorRepository.findByFirstName(firstName);
         if (directors.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Director %s not found", firstName));
@@ -35,8 +31,7 @@ public class DirectorController {
         return directors;
     }
 
-    @GetMapping("/directors/lastName/{lastName}")
-    public List<Director> getDirectorsByLastName(@PathVariable String lastName) {
+    public List<Director> getDirectorsByLastName(String lastName) {
         List<Director> directors = directorRepository.findByLastName(lastName);
         if (directors.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Director %s not found", lastName));
@@ -44,8 +39,7 @@ public class DirectorController {
         return directors;
     }
 
-    @GetMapping("/director/{firstName}/{lastName}")
-    public Director getDirectorByFirstNameAndLastName(@PathVariable String firstName, @PathVariable String lastName) {
+    public Director getDirectorByFirstNameAndLastName(String firstName, String lastName) {
         Optional<Director> directorOpt = directorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
         if (directorOpt.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Director %s %s not found", firstName, lastName));
@@ -53,8 +47,7 @@ public class DirectorController {
         return directorOpt.get();
     }
 
-    @GetMapping("/directors/firstName/substring/{firstName}")
-    public List<Director> getDirectorsByFirstNameSubstring(@PathVariable String firstName) {
+    public List<Director> getDirectorsByFirstNameSubstring(String firstName) {
         List<Director> directors = directorRepository.findByFirstNameSubstring(firstName);
         if (directors.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Director with first name containing %s not found", firstName));
@@ -62,8 +55,7 @@ public class DirectorController {
         return directors;
     }
 
-    @GetMapping("/directors/lastName/substring/{lastName}")
-    public List<Director> getDirectorsByLastNameSubstring(@PathVariable String lastName) {
+    public List<Director> getDirectorsByLastNameSubstring(String lastName) {
         List<Director> directors = directorRepository.findByLastNameSubstring(lastName);
         if (directors.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Director with last name containing %s not found", lastName));
@@ -71,46 +63,29 @@ public class DirectorController {
         return directors;
     }
 
-    @GetMapping("/director/{firstName}/{lastName}/movies")
-    public Set<Movie> getMoviesByDirector(@PathVariable String firstName, @PathVariable String lastName) {
-        Optional<Director> directorOpt = directorRepository.findDistinctByFirstNameAndLastName(firstName, lastName);
-        if (directorOpt.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Director %s %s not found", firstName, lastName));
-        }
-        return directorOpt.get().getMovies();
-    }
-
-
-
-
-    @PostMapping("/director/post")
-    public Director addDirector(@RequestBody Director director) {
+    public Director addDirector(Director director) {
         if (directorRepository.findDistinctByFirstNameAndLastName(director.getFirstName(), director.getLastName()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, format("Director %s %s already exists", director.getFirstName(), director.getLastName()));
         }
         return directorRepository.save(director);
     }
 
-    @PutMapping("directors/put")
-    @ResponseStatus(HttpStatus.OK)
-    public void updateDirectors(@RequestBody List<Director> newDirectorData) {
-        for (int i = 0; i < newDirectorData.size(); i++) {
-            Optional<Director> directorOpt = directorRepository.findById(newDirectorData.get(i).getId());
+    public void updateDirectors(List<Director> newDirectorData) {
+        for (Director newDirectorDatum : newDirectorData) {
+            Optional<Director> directorOpt = directorRepository.findById(newDirectorDatum.getId());
             if (directorOpt.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Director with id %d not found", newDirectorData.get(i).getId()));
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, format("Director with id %d not found", newDirectorDatum.getId()));
             }
-            System.out.println("Updating director with id " + newDirectorData.get(i).getId());
+            System.out.println("Updating director with id " + newDirectorDatum.getId());
             Director director = directorOpt.get();
-            director.setFirstName(newDirectorData.get(i).getFirstName());
-            director.setLastName(newDirectorData.get(i).getLastName());
-            director.setAge(newDirectorData.get(i).getAge());
+            director.setFirstName(newDirectorDatum.getFirstName());
+            director.setLastName(newDirectorDatum.getLastName());
+            director.setAge(newDirectorDatum.getAge());
             directorRepository.save(director);
         }
     }
 
-    @DeleteMapping("/directors/delete")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteDirectors(@RequestBody long[] directorIds) {
+    public void deleteDirectors(long[] directorIds) {
         for (long directorId : directorIds) {
             Optional<Director> directorOpt = directorRepository.findById(directorId);
             if (directorOpt.isEmpty()) {

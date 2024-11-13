@@ -25,7 +25,6 @@ public class Actor {
     @JsonIgnore
     private Set<Movie> movies = new HashSet<>();
 
-
     public Actor(String firstName, String lastName, int age) {
         this.firstName = firstName;
         this.lastName = lastName;
